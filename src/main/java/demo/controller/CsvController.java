@@ -1,6 +1,8 @@
 package demo.controller;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -47,6 +50,22 @@ public class CsvController {
 		HttpHeaders headers = new HttpHeaders();
 		downloadHelper.addContentDisposition(headers, filename+".csv");
 		return new ResponseEntity<>(getCsvText().getBytes("UTF-8"), headers, HttpStatus.OK);
+	}
+
+	@GetMapping("/fileStore")
+	public String getFileStore() {
+
+		try {
+            FileOutputStream fos = new FileOutputStream("upload-dir/test.txt");
+            OutputStreamWriter osw = new OutputStreamWriter(fos,"Shift_JIS");
+            osw.write(getCsvText());
+            osw.close();
+            fos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return "index";
 	}
 
 }
